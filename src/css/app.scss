@@ -1,0 +1,49 @@
+// app global css in SCSS form
+
+.text-normal {
+  text-transform: none !important;
+}
+
+.card-app {
+  background-color: #f8f3ef !important;
+}
+
+.btn-border {
+  border-radius: 10px !important;
+}
+
+.text-line {
+  -webkit-text-decoration-line: line-through;
+  /* Safari */
+  text-decoration-line: line-through;
+}
+
+.content-wrap {
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+.v-main {
+  max-height: 700px;
+  overflow-y: auto;
+}
+
+@media screen and(min-width:960px) {
+  *::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #f5f5f5;
+  }
+
+  *::-webkit-scrollbar {
+    width: 1px;
+    background-color: #f5f5f5;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.c-pointer {
+  cursor: pointer;
+}
