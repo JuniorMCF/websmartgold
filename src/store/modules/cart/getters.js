@@ -5,9 +5,9 @@ export function getStateOpenCart(state) {
 }
 
 export function getCart(state) {
-  return state.cart
+  return state.cart != null ? state.cart : []
 }
 
 export function getQuantityCart(state) {
-  return state.cart.length
+  return state.cart != null ? state.cart.length : 0
 }

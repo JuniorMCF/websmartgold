@@ -11,23 +11,33 @@
           icon="menu"
           class="text-info"
         />
-        <q-toolbar-title class="text-info text-weight-bold text-h5 q-ml-md">Smart Gold</q-toolbar-title>
+        <q-toolbar-title class="text-info text-weight-bold text-h5 q-ml-md">
+          <span class="c-pointer" @click.prevent="openLink(homeLink)"> Smart Gold </span>
+        </q-toolbar-title>
         <q-space v-if="!isMobile"></q-space>
-        <q-tabs v-model="tab" dense class="bg-white" v-if="!isMobile">
+        <q-tabs
+          v-model="tab"
+          dense
+          class="bg-white text-info text-normal "
+          v-if="!isMobile"
+
+          active-color="secondary"
+        >
           <q-tab
             :name="link.name"
             :icon="link.icon"
             :label="link.title"
             v-for="(link, index) in linksLogout"
             :key="'logouts' + index"
-            @click="openLink(link)"
-            class="text-info text-weight-bold bg-white"
+            @click.prevent="openLink(link)"
+            
           >
             <q-badge
               v-if="link.name === 'shopping_bag' && quantityCart > 0"
-              color="red"
+              style="background: #0277bd !important"
               floating
-            >{{ quantityCart }}</q-badge>
+              >{{ quantityCart }}</q-badge
+            >
           </q-tab>
         </q-tabs>
         <q-space v-if="!isMobile"></q-space>
@@ -59,7 +69,7 @@
               clickable
               v-ripple
               :active="active"
-              active-class="text-warning"
+              active-class="text-warning text-normal"
               @click="openLink(item)"
             >
               <q-item-section avatar>
@@ -99,7 +109,6 @@ const linksList = [
     link: "/smart-shop",
     isAuth: true,
   },
-
 
   {
     title: "Cart",
@@ -147,13 +156,12 @@ const linksLogout = [
     isAuth: false,
   },
   {
-    title: "Smart shop",
+    title: "Smart buy",
     icon: "storefront",
     name: "smart_shop",
     link: "/smart-shop",
     isAuth: true,
   },
-
 
   {
     title: "Cart",
@@ -171,6 +179,13 @@ const linksLogout = [
   },
 ];
 
+const home = {
+  title: "Home",
+  icon: "home",
+  name: "home",
+  link: "/home",
+  isAuth: false,
+};
 import { defineComponent, ref } from "vue";
 import Cart from "../components/cart/Cart.vue";
 export default defineComponent({
@@ -180,7 +195,7 @@ export default defineComponent({
   name: "MainLayout",
   data: () => ({
     active: false,
-    isMobile: false
+    isMobile: false,
   }),
   mounted() {
     this.onResize();
@@ -199,9 +214,9 @@ export default defineComponent({
   methods: {
     onResize() {
       if (window.innerWidth > 960) {
-        this.isMobile = false
+        this.isMobile = false;
       } else {
-        this.isMobile = true
+        this.isMobile = true;
       }
     },
     openLink(item) {
@@ -211,16 +226,16 @@ export default defineComponent({
         } else {
           this.$store.commit("cart/openCart", true);
         }
-        this.drawerLeft = false
+        this.drawerLeft = false;
       } else {
         this.$router.push({ path: item.link });
-        this.drawerLeft = false
+        this.drawerLeft = false;
         this.$store.commit("cart/openCart", false);
       }
       if (window.innerWidth < 960) {
         this.drawerLeft = false;
       }
-
+      this.$store.dispatch("home/setTab", { tab: item.name });
     },
   },
   setup() {
@@ -234,20 +249,23 @@ export default defineComponent({
       },
       drawerLeft: ref(false),
       linksLogout: linksLogout,
-      tab: ref('home')
+      homeLink: home,
+      //tab: ref('home')
     };
-
   },
   computed: {
     quantityCart() {
-
-      return this.$store.getters["cart/getQuantityCart"]
-    }
-  }
+      return this.$store.getters["cart/getQuantityCart"];
+    },
+    tab() {
+      //console.log(this.$store.getters["home/getTab"]);
+      return this.$store.getters["home/getTab"];
+    },
+  },
 });
 </script>
 
-<style >
+<style scoped>
 .q-drawer-container .q-drawer__backdrop {
   background-color: rgba(138, 111, 109, 0.4) !important;
 }

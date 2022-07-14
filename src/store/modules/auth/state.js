@@ -7,5 +7,8 @@ export default function () {
     mobile: "",
 
     isLoggedIn: false,
+
+    time:60,
+    otp:false,
   };
 }

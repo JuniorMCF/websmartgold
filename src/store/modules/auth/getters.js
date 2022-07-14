@@ -20,4 +20,11 @@ export function getEmail(state) {
   return state.email
 }
 
+export function getTimer(state) {
+  return state.time
+}
+
+export function getOtp(state){
+  return state.otp
+}
 

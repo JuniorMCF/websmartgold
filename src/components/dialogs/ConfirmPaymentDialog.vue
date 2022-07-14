@@ -1,6 +1,6 @@
 <template>
   <q-dialog
-    persistent
+    
     @keydown.esc="cancel"
     v-model="dialog"
     :max-width="options.width"

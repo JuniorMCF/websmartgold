@@ -11,7 +11,9 @@
 .btn-border {
   border-radius: 10px !important;
 }
-
+.line-h1{
+  line-height: 1.5;
+}
 .text-line {
   -webkit-text-decoration-line: line-through;
   /* Safari */
@@ -46,4 +48,8 @@
 
 .c-pointer {
   cursor: pointer;
+}
+
+.pac-container {
+  z-index: 100000000000 !important;
 }

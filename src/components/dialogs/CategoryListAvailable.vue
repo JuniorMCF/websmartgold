@@ -20,19 +20,20 @@
       </q-btn>
 
       <div class="cart-fixed">
-        <q-img src="~assets/app/logo.png"></q-img>
+        <q-img no-spinner src="~assets/app/logo.png"></q-img>
       </div>
       <div class="row justify-center q-mt-lg" style="height: 48px">
         <div class="col-12 text-center">
           <p
             class="text-h6 q-my-none"
             style="padding: 0px 80px 0px 80px; overflow: hidden; line-height: 1"
-          >{{ store.store_name }}</p>
+          >Shop By Category</p>
         </div>
       </div>
+
       <q-separator></q-separator>
-      <q-card-section class="q-pb-none scroll" style="max-height: 574px">
-        <div class="row q-col-gutter-x-md q-col-gutter-y-md">
+      <q-card-section class="q-py-md scroll q-pa-none" style="max-height: 574px">
+        <div class="row q-col-gutter-x-md q-col-gutter-y-md q-pa-sm q-mx-auto">
           <div
             class="col-6 q-px-sm"
             v-for="(categoria, index) in categorys"
@@ -53,7 +54,7 @@
               "
                 class="q-mr-md"
               >
-                <q-img style="border-radius: 10px" fit="contain" :src="categoria.image" ratio="1"></q-img>
+                <q-img  no-spinner style="border-radius: 10px" fit="contain" :src="categoria.image" ratio="1"></q-img>
               </div>
 
               <span class="text-weight-bold text-info">{{ categoria.name }}</span>
@@ -63,11 +64,11 @@
       </q-card-section>
     </q-card>
   </q-dialog>
-  <q-overlay v-model="load" :no-scroll="true" :z-index="5000">
+  <q-overlay v-model="load" :no-scroll="true" :z-index="5000" cursor-type="inherit">
     <template #body>
       <div class="fullscreen row justify-evenly items-center">
         <div style="height: 80px; width: 80px">
-          <q-img src="~assets/app/load.gif" alt="gif load" fit="contain"></q-img>
+          <q-img no-spinner src="~assets/app/load.gif" alt="gif load" fit="contain"></q-img>
         </div>
       </div>
     </template>
@@ -104,10 +105,10 @@ export default {
     };
   },
   methods: {
-    open(store, options) {
+    open( options) {
       this.dialog = true;
-      this.store = store;
-      console.log(store)
+      //this.store = store;
+      //console.log(store)
 
       this.options = Object.assign(this.options, options);
       this.loadAvailables()
@@ -121,6 +122,7 @@ export default {
       this.dialog = false;
     },
     cancel() {
+      this.categorys = []
       this.resolve(false);
       this.dialog = false;
     },
@@ -137,14 +139,15 @@ export default {
     loadAvailables() {
 
       this.load = true;
-      let endpooint = "categorylist-seller.php";
+      //let endpoint = "categorylist-seller.php";
+      let endpoint = "categorylist.php";
       let token =
         "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDg1MDcwNTIsInN1YiI6ImVLYXJ0IEF1dGhlbnRpY2F0aW9uIiwiaXNzIjoiZUthcnQifQ.dcdE_rrGdj9jN4z-HmBu1lsO2PH3OkX1r0o63DvIkIo";
 
-      const url = "http://smartgold.blazeaisolutions.com/api/" + endpooint;
+      const url = "https://smartgold.blazeaisolutions.com/api/" + endpoint;
       let data = new FormData();
       data.append("accesskey", "90336");
-      data.append("seller_id", this.store.id);
+      //data.append("seller_id", this.store.id);
 
       const headers = {
         "Content-Type": "application/json",
@@ -155,7 +158,7 @@ export default {
           headers: headers,
         })
         .then((response) => {
-          console.log(response)
+          //console.log(response)
           this.categorys = response.data.data
           this.load = false;
         })
@@ -170,7 +173,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .q-dialog-plugin {
   width: 500px;
 }

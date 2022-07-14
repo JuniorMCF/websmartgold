@@ -28,9 +28,10 @@ module.exports = configure(function (ctx) {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-webpack/boot-files
     boot: [
-
+      'google-maps',
       'axios',
-      'firebase'
+      'firebase',
+      'shared-social'
     ],
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-css
@@ -62,7 +63,7 @@ module.exports = configure(function (ctx) {
       // Add dependencies for transpiling with Babel (Array of string/regex)
       // (from node_modules, which are by default not transpiled).
       // Applies only if "transpile" is set to true.
-      // transpileDependencies: [],
+      //transpileDependencies: ['x5-gmaps'],
 
       // rtl: true, // https://quasar.dev/options/rtl-support
       // preloadChunks: true,
@@ -170,7 +171,7 @@ module.exports = configure(function (ctx) {
       manifest: {
         name: `Smart Gold`,
         short_name: `SG`,
-        description: `Proyecto de venta de joyas`,
+        description: `Smart Gold jewelry sale`,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

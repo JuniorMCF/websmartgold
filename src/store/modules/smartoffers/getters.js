@@ -14,3 +14,7 @@ export function getLatitude(state) {
 export function getRangeTo(state) {
   return state.range_to
 }
+
+export function getOffer(state) {
+  return state.offer
+}

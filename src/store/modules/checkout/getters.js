@@ -9,3 +9,7 @@ export function getAddress(state) {
 export function getCheckMethod(state) {
   return state.checkMethod
 }
+
+export function getCheckout(state){
+  return state.checkouts
+}

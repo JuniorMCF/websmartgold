@@ -27,7 +27,7 @@ const routes = [
 
   },
   {
-    path: "/otp",
+    path: "/otp/:verificationId/:phone",
     component: () => import("layouts/AuthLayout.vue"),
     children: [
       { path: "", component: () => import("pages/auth/otp/Index.vue"), name: 'otp' }
@@ -44,6 +44,13 @@ const routes = [
       { path: "", component: () => import("pages/home/Index.vue"), name: 'home' }
     ],
   },
+  {
+    path:'/all-products',
+    component: () => import("layouts/MainLayout.vue"),
+    children: [
+      { path: "", component: () => import("pages/all_products/Index.vue"), name: 'all_products' }
+    ],
+  },
 
 
   {
@@ -55,14 +62,32 @@ const routes = [
       { path: "", component: () => import("pages/category/Index.vue"), name: 'category' }
     ],
   },
+  {
+    path: "/store/:id/products/:store_name",
+
+    component: () => import("layouts/MainLayout.vue"),
+
+    children: [
+      { path: "", component: () => import("pages/store_products/Index.vue"), name: 'store-products' }
+    ],
+  },
 
   {
-    path: "/category/:category_id/products/:price_min/:price_max/sort/:sort",
+    path: "/category/:category_id/products/:price_min/:price_max/gender/:gender/sort/:sort",
 
     component: () => import("layouts/MainLayout.vue"),
 
     children: [
       { path: "", component: () => import("pages/filters/Index.vue"), name: 'category-by-filter' }
+    ],
+  },
+  {
+    path: "/category/products/:search_term",
+
+    component: () => import("layouts/MainLayout.vue"),
+
+    children: [
+      { path: "", component: () => import("pages/filter_term/Index.vue"), name: 'products-by-term' }
     ],
   },
 
@@ -93,9 +118,9 @@ const routes = [
     children: [
       { path: "", component: () => import("pages/profile/Index.vue"), name: "profile" }
     ],
-    meta: {
+    /*meta: {
       requiresAuth: true
-    }
+    }*/
   },
   {
     path: "/orders",
@@ -144,7 +169,17 @@ const routes = [
       { path: "", component: () => import("pages/smartoffers/Index.vue"), name: "smart_offers" }
     ],
   },
+  {
+    path: "/shop-offer-details",
 
+    component: () => import("layouts/MainLayout.vue"),
+    children: [
+      { path: "", component: () => import("pages/shop-offer-details/Index.vue"), name: "shop-offer-details" }
+    ],
+    /*meta: {
+      requiresAuth: true
+    }*/
+  },
   {
     path: "/faqs",
 

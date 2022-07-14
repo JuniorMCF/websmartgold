@@ -20,18 +20,20 @@
       </q-btn>
 
       <div class="cart-fixed">
-        <q-img src="~assets/app/logo.png"></q-img>
+        <q-img no-spinner src="~assets/app/logo.png"></q-img>
       </div>
       <div class="row justify-center q-mt-lg" style="height: 48px">
         <div class="col-12 text-center">
           <p
             class="text-h6 q-my-none"
             style="padding: 0px 80px 0px 80px; overflow: hidden; line-height: 1"
-          >Filter</p>
+          >
+            Filter
+          </p>
         </div>
       </div>
       <q-separator></q-separator>
-      <q-card-section class="q-pb-none scroll" style="max-height: 574px">
+      <q-card-section class="q-py-none scroll" style="max-height: 540px">
         <div class="row justify-center q-py-xs q-px-none q-mx-none">
           <div class="col-12 q-px-sm self-center">
             <div class="row q-my-md">
@@ -64,26 +66,45 @@
                   track-color="primary"
                   inner-track-color="grey lighten-5"
                   :min="0"
-                  :max="100000"
-                  :step="1000"
+                  :max="1000000"
+                  :step="10000"
                   label
                   drag-range
                 ></q-range>
               </div>
             </div>
-
+            <div class="row q-my-md">
+              <div class="col-12">
+                <p class="text-h6 text-weight-bold">Gender</p>
+              </div>
+              <div class="col-12">
+                <q-select
+                  square
+                  outlined
+                  v-model="gender"
+                  :options="genders"
+                 
+                />
+              </div>
+            </div>
             <div class="row q-my-md">
               <div class="col-12">
                 <p class="text-h6 text-weight-bold">Sort</p>
               </div>
               <div class="col-12">
-                <q-select square outlined v-model="order_by" :options="orders" option-label="name" />
+                <q-select
+                  square
+                  outlined
+                  v-model="order_by"
+                  :options="orders"
+                  option-label="name"
+                />
               </div>
             </div>
           </div>
         </div>
       </q-card-section>
-
+      
       <q-card-actions
         align="center"
         class="q-py-md q-px-md"
@@ -97,7 +118,8 @@
           square
           class="q-mx-auto full-width bg-primary"
           @click.prevent="search()"
-        >Search</q-btn>
+          >Search</q-btn
+        >
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -105,34 +127,37 @@
 
 <script>
 import axios from "axios";
-import { Notify } from 'quasar';
+import { Notify } from "quasar";
 export default {
-  name: 'openfilters-component',
-  mounted() { },
+  name: "openfilters-component",
+  mounted() {},
   data: function () {
     return {
       size: null,
       color: null,
       loadCart: false,
-
+      genders: ["Female", "Male", "Unisex", "Kids"],
+      gender:"Female",
       dialog: false,
       resolve: null,
       reject: null,
-      fnMarkerLabel: { 0: "₹0", 100000: "₹100000" },
-      price: { min: 0, max: 20000 },
+      fnMarkerLabel: { 0: "₹0", 1000000: "₹1000000" },
+      price: { min: 50000, max: 1000000 },
       categorys: [],
       category: null,
-      orders: [{
-        id: 1,
-        name: "Price: Low to High"
-      },
-      {
-        id: 2,
-        name: "Price: High to Low"
-      },],
+      orders: [
+        {
+          id: 1,
+          name: "Price: Low to High",
+        },
+        {
+          id: 2,
+          name: "Price: High to Low",
+        },
+      ],
       order_by: {
         id: 1,
-        name: "Price: Low to High"
+        name: "Price: Low to High",
       },
       options: {
         color: "primary",
@@ -147,9 +172,8 @@ export default {
       this.dialog = true;
       this.categorys = categorys;
       if (this.categorys.length > 0) {
-        this.category = this.categorys[0]
+        this.category = this.categorys[0];
       }
-
 
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
@@ -166,25 +190,24 @@ export default {
     },
     search() {
       if (this.price.max - this.price.min >= 20000) {
-
-
         this.$router.push({
-          name: 'category-by-filter', params: {
+          name: "category-by-filter",
+          params: {
             category_id: this.category.id,
             price_min: this.price.min,
             price_max: this.price.max,
-            sort: this.order_by.id
-          }
-        })
+            gender:this.gender,
+            sort: this.order_by.id,
+          },
+        });
       } else {
         Notify.create({
           message: "The price range must be a minimum of 20000",
           group: false,
         });
       }
-    }
+    },
   },
-
 };
 </script>
 

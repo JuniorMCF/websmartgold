@@ -1,6 +1,6 @@
 <template>
   <q-page class="v-main">
-    <div class="row q-px-none justify-center q-pt-md q-mx-none">
+    <div class="row q-px-none justify-center q-py-none q-mx-none">
       <div class="col-md-10 col-12 q-px-md q-mx-none text-center">
         <q-toolbar-title class="text-black text-weight-bold text-h6">{{ title }}</q-toolbar-title>
       </div>
@@ -11,16 +11,16 @@
           <div class="row">
             <div class="col q-pl-md q-pt-md">
               <div class="bg-white img_gold">
-                <q-img src="~assets/app/logo.png"></q-img>
+                <q-img no-spinner src="~assets/app/logo.png"></q-img>
               </div>
             </div>
-            <div class="col self-center text-right q-pr-md q-pt-md">
+            <!--<div class="col self-center text-right q-pr-md q-pt-md">
               <p class="text-white text-subtitle1 text-weight-bold q-ma-none">Market price</p>
               <p class="text-white text-subtitle1 text-weight-bold q-ma-none">₹5.081 + 3% GST</p>
-            </div>
+            </div>-->
           </div>
           <q-card-section class="q-py-lg q-my-lg">
-            <q-img src="~assets/app/gold_build.jpeg"></q-img>
+            <q-img no-spinner src="~assets/app/gold_build.jpeg"></q-img>
           </q-card-section>
           <q-card-section class="q-pb-lg">
             <div class="row">
@@ -62,6 +62,10 @@ export default {
     value: 100,
   }),
   mounted() {
+        if (!this.$store.getters["auth/getOtp"]) {
+      this.$store.dispatch("auth/setLoggedIn", false);
+      this.$store.dispatch("auth/signOut");
+    }
     //this.openSuccess();
     //this.openError();
   },

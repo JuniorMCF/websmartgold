@@ -9,7 +9,7 @@
   >
     <q-card square class="q-dialog-plugin bg-white q-py-md">
       <div class="cart-fixed">
-        <q-img src="~assets/app/logo.png"></q-img>
+        <q-img no-spinner src="~assets/app/logo.png"></q-img>
       </div>
       <p class="text-info text-normal q-my-xs text-h6 text-center text-weight-bold">Payment Failed</p>
 
@@ -17,7 +17,7 @@
         <div class="row q-py-md">
           <div class="col-12">
             <div style="width: 258px; height: 250px" class="q-mx-auto">
-              <q-img src="~assets/app/failed.png"></q-img>
+              <q-img no-spinner src="~assets/app/failed.png"></q-img>
             </div>
           </div>
           <div class="col-12 text-center q-my-md">

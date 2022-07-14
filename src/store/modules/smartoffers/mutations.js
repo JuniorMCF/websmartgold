@@ -14,3 +14,8 @@ export const setLatitude = (state, latitude) => {
 export const setRangeTo = (state, rangeTo) => {
   state.range_to = rangeTo
 }
+
+
+export const  setOffer = (state, payload) =>{
+  state.offer = payload.offer
+}

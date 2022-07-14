@@ -19,7 +19,7 @@
               class="my-card shadow-2 cursor-pointer q-hoverable"
               @click.prevent="showDetails(ring)"
             >
-              <q-img :src="ring.image" :alt="ring.name" class="my-card-img" fit="contain"></q-img>
+              <q-img no-spinner :src="ring.image" :alt="ring.name" class="my-card-img" fit="contain"></q-img>
 
               <q-card-section class="text-start my-card-desc-2">
                 <span class="text-info">{{ ring.name }}</span>
@@ -64,6 +64,10 @@ export default {
     rings: [],
   }),
   mounted() {
+        if (!this.$store.getters["auth/getOtp"]) {
+      this.$store.dispatch("auth/setLoggedIn", false);
+      this.$store.dispatch("auth/signOut");
+    }
     //console.log(this.$route.params.id);
     this.getData();
   },
@@ -79,7 +83,7 @@ export default {
     openDetails() {
       this.$refs.ringDetails.open().then((res) => {
         if (res) {
-          console.log("hola");
+          //console.log("hola");
         }
       });
     },
@@ -97,7 +101,7 @@ export default {
       let token =
         "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDg1MDcwNTIsInN1YiI6ImVLYXJ0IEF1dGhlbnRpY2F0aW9uIiwiaXNzIjoiZUthcnQifQ.dcdE_rrGdj9jN4z-HmBu1lsO2PH3OkX1r0o63DvIkIo";
 
-      const url = "http://smartgold.blazeaisolutions.com/api/" + endpooint;
+      const url = "https://smartgold.blazeaisolutions.com/api/" + endpooint;
       let data = new FormData();
       data.append("accesskey", "90336");
       data.append("category_id", this.$route.params.id);
@@ -111,7 +115,7 @@ export default {
         })
         .then((response) => {
           if (response.data.success == true) {
-            console.log(response.data);
+            //console.log(response.data);
             this.rings = response.data.data;
           }
         })

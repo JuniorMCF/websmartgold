@@ -2,9 +2,25 @@
   <q-page class="v-main">
     <div class="row q-px-none justify-center q-pt-md q-mx-none content-wrap">
       <div class="col-md-10 col-12 q-px-md q-mx-none">
-        <q-toolbar-title class="text-black text-weight-bold text-h6">{{ name }}</q-toolbar-title>
+        <q-toolbar-title class="text-black text-weight-bold text-h6">{{
+          name
+        }}</q-toolbar-title>
       </div>
     </div>
+
+    <div class="row q-px-none justify-center content-wrap q-pt-md " v-show="empty">
+      <div class="col-12 col-md-10 q-px-none" :class="empty === true ? 'empty_order':''">
+        <q-img
+            fit="contain"
+            src="~assets/app/empty_order.jpg"
+         
+            class="empty_order"
+            no-spinner
+          ></q-img>
+          <p class="text-primary text-center text-h6 text-weight-bold">No Products Found</p>
+      </div>
+    </div>
+
 
     <div class="row justify-center q-py-md q-px-none q-mx-none content-wrap">
       <div class="col-md-10 col-12 q-px-sm self-center q-mx-md">
@@ -19,7 +35,13 @@
               class="my-card shadow-2 cursor-pointer q-hoverable"
               @click.prevent="showDetails(ring)"
             >
-              <q-img :src="ring.image" :alt="ring.name" class="my-card-img" fit="contain"></q-img>
+              <q-img
+                :src="ring.image"
+                :alt="ring.name"
+                class="my-card-img"
+                fit="contain"
+                no-spinner
+              ></q-img>
 
               <q-card-section class="text-start my-card-desc-2">
                 <span class="text-info">{{ ring.name }}</span>
@@ -48,11 +70,16 @@
     </q-page-sticky>-->
   </q-page>
   <RingDetails ref="ringDetails"></RingDetails>
-  <q-overlay v-model="load" :no-scroll="true" :z-index="5000">
+  <q-overlay v-model="load" :no-scroll="true" :z-index="5000" cursor-type="inherit">
     <template #body>
       <div class="fullscreen row justify-evenly items-center">
         <div style="height: 80px; width: 80px">
-          <q-img src="~assets/app/load.gif" alt="gif load" fit="contain"></q-img>
+          <q-img
+            src="~assets/app/load.gif"
+            alt="gif load"
+            fit="contain"
+            no-spinner
+          ></q-img>
         </div>
       </div>
     </template>
@@ -60,21 +87,21 @@
 </template>
 
 <script>
-
 import RingDetails from "src/components/dialogs/RingDetails.vue";
 import { ref } from "vue";
 import { QOverlay } from "@quasar/quasar-ui-qoverlay";
 import axios from "axios";
 export default {
-  name: 'filters-component',
+  name: "filters-component",
   components: {
     RingDetails,
-    QOverlay
+    QOverlay,
   },
   data: () => ({
     load: false,
     name: "Results",
     rings: [],
+    empty:false
   }),
   mounted() {
     //this.name = this.$route.params.category_id
@@ -93,7 +120,7 @@ export default {
     openDetails() {
       this.$refs.ringDetails.open().then((res) => {
         if (res) {
-          console.log("hola");
+          //console.log("hola");
         }
       });
     },
@@ -107,24 +134,24 @@ export default {
         .replace("Rp", "£");
     },
     getData() {
-      this.load = true
+      this.load = true;
       let endpooint = "filter_products.php";
       let token =
         "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDg1MDcwNTIsInN1YiI6ImVLYXJ0IEF1dGhlbnRpY2F0aW9uIiwiaXNzIjoiZUthcnQifQ.dcdE_rrGdj9jN4z-HmBu1lsO2PH3OkX1r0o63DvIkIo";
 
-      const url = "http://smartgold.blazeaisolutions.com/api/" + endpooint;
+      const url = "https://smartgold.blazeaisolutions.com/api/" + endpooint;
       let data = new FormData();
       data.append("accesskey", "90336");
       data.append("from_price_range", this.$route.params.price_min);
       data.append("to_price_range", this.$route.params.price_max);
+      data.append("gender", this.$route.params.gender);
       data.append("sort", this.$route.params.sort);
-      data.append("category_id", this.$route.params.category_id);
 
+      data.append("category_id", this.$route.params.category_id);
 
       const headers = {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-
       };
       axios
         .post(url, data, {
@@ -132,13 +159,16 @@ export default {
         })
         .then((response) => {
           if (response.data.success == true) {
-            console.log(response.data);
             this.rings = response.data.data;
+           
+          }else{
+            this.empty = true
           }
-          this.load = false
+          this.load = false;
         })
         .catch((err) => {
-          this.load = false
+          this.empty = true
+          this.load = false;
         });
     },
     showDetails(product) {
@@ -149,11 +179,18 @@ export default {
       });
     },
   },
-
 };
 </script>
 
-<style>
+<style scoped>
+.empty_order {
+  height: 400px;
+}
+@media screen and (max-width: 960px) {
+  .empty_order {
+    height: 400px;
+  }
+}
 .my-card {
   width: 100%;
 }

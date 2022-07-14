@@ -26,7 +26,7 @@
           <q-icon class="q-ml-sm" name="arrow_back_ios"></q-icon>
         </q-btn>
       </q-card>
-      <q-card class="card_cart no-box-shadow no-border-radius">
+      <q-card class="card_cart no-box-shadow no-border-radius" v-if="!notFound">
         <q-card
           class="shadow-0 q-px-md q-my-md"
           v-for="(item, index) in cart"
@@ -49,12 +49,14 @@
             </div>
 
             <q-card-section class="q-py-none content-cart row justify-between">
-              <p class="col-10 text-subtitle1 text-weight-bold text-info q-my-xs name_cart">
+              <p
+                class="col-10 text-subtitle1 text-weight-bold text-info q-my-xs name_cart"
+              >
                 <span>{{ item.name }}</span>
               </p>
-              <span
-                class="col-12 text-secondary text-weight-bold text-subtitle2"
-              >{{ formatRupiah(item.discounted_price) }}</span>
+              <span class="col-12 text-secondary text-weight-bold text-subtitle2">{{
+                formatRupiah(item.discounted_price)
+              }}</span>
               <div class="col-12 q-pa-none">
                 <div class="row justify-between q-mt-md">
                   <q-field
@@ -80,7 +82,9 @@
                       <div
                         class="text-center text-secondary full-width no-outline text-caption text-weight-bold"
                         tabindex="0"
-                      >{{ item.quantity }}</div>
+                      >
+                        {{ item.quantity }}
+                      </div>
                     </template>
 
                     <template v-slot:after>
@@ -104,37 +108,49 @@
           </q-card-section>
         </q-card>
       </q-card>
-      <q-card class="no-border no-shadow card-footer q-px-md">
-        <q-card-section>
-          <div class="row">
+      <q-card class="card_cart no-box-shadow no-border-radius" v-if="notFoundElements">
+        <q-img fit="contain" src="~assets/app/cart_empty.png" class="empty_order"></q-img>
+      </q-card>
+
+      <div class="row" >
+        <div class="col-12">
+          <div class="row q-px-lg">
             <div class="col self-center">
-              <span class="text-secondary text-subtitle1 text-weight-bold">Cart Total</span>
+              <span class="text-secondary text-subtitle1 text-weight-bold"
+                >Cart Total</span
+              >
             </div>
             <div class="col">
               <span
                 style="float: right"
                 class="text-secondary text-weight-bold text-subtitle1"
-              >{{ formatRupiah(total) }}</span>
+                >{{ formatRupiah(total) }}</span
+              >
             </div>
           </div>
-        </q-card-section>
-      </q-card>
-      <div class="row">
+        </div>
+
         <div class="col-12 justify-center align-center text-center q-pa-md">
           <q-btn
             color="primary"
             class="primary-text text-h6 full-width"
             @click.prevent="openCheckout()"
+       
           >
             <span class="text-info text-normal text-h6">Proceed to Checkout</span>
 
-            <q-icon class="q-py-xs q-ml-md" color="info" size="xs" name="arrow_forward_ios"></q-icon>
+            <q-icon
+              class="q-py-xs q-ml-md"
+              color="info"
+              size="xs"
+              name="arrow_forward_ios"
+            ></q-icon>
           </q-btn>
         </div>
       </div>
     </q-scroll-area>
   </q-drawer>
-  <q-overlay v-model="loadCart" :no-scroll="true" :z-index="5000">
+  <q-overlay v-model="loadCart" :no-scroll="true" :z-index="5000" cursor-type="inherit">
     <template #body>
       <div class="fullscreen row justify-evenly items-center">
         <div style="height: 80px; width: 80px">
@@ -151,19 +167,24 @@ import { QOverlay } from "@quasar/quasar-ui-qoverlay";
 import { Notify } from "quasar";
 
 export default {
-  name: 'cart-component',
+  name: "cart-component",
   components: {
     QOverlay,
   },
   data: () => ({
     loadCart: false,
     width: 500,
+    notFound: true,
+    notFoundElements: false,
     //drawerRight: false,
-
   }),
 
-
   methods: {
+    getData() {
+      this.$store.dispatch("cart/updateCart", {
+        user_id: this.$store.getters["auth/getUserId"],
+      });
+    },
     onResize() {
       if (window.innerWidth > 960) {
         this.width = 500;
@@ -175,29 +196,28 @@ export default {
       this.$store.commit("cart/openCart", false);
     },
     openCheckout() {
-      if (this.cart.some(item => item.status === "Not Available")) {
+      if (this.cart.some((item) => item.status === "Not Available")) {
         Notify.create({
           message: "Oops! Some of Products are currently unavailable",
           group: false,
         });
 
-        return
+        return;
       }
       if (this.cart.length == 0) {
         Notify.create({
           message: "Oops! Cart is Empty",
           group: false,
         });
-        return
+        return;
       }
       if (this.$store.getters["auth/isLoggedIn"] === false) {
-        this.$router.push({ path: "/login" })
-        return
+        this.$router.push({ path: "/login" });
+        return;
       }
 
-
       this.$store.commit("cart/openCart", false);
-      this.$router.push("checkout");
+      this.$router.push({ name: "checkout" });
     },
     formatRupiah(money) {
       return new Intl.NumberFormat("id-ID", {
@@ -215,7 +235,7 @@ export default {
       let token =
         "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDg1MDcwNTIsInN1YiI6ImVLYXJ0IEF1dGhlbnRpY2F0aW9uIiwiaXNzIjoiZUthcnQifQ.dcdE_rrGdj9jN4z-HmBu1lsO2PH3OkX1r0o63DvIkIo";
 
-      const url = "http://smartgold.blazeaisolutions.com/api/" + endpooint;
+      const url = "https://smartgold.blazeaisolutions.com/api/" + endpooint;
       let data = new FormData();
       data.append("accesskey", "90336");
       data.append("user_id", this.$store.getters["auth/getUserId"]);
@@ -231,8 +251,12 @@ export default {
         })
         .then((response) => {
           this.$store.dispatch("cart/updateCart", {
-            user_id: this.$store.getters["auth/getUserId"]
-          })
+            user_id: this.$store.getters["auth/getUserId"],
+          });
+          this.$store.dispatch("checkout/setCheckoutUpdate", {
+            user_id: this.$store.getters["auth/getUserId"],
+            checkMethod: this.$store.getters["checkout/getCheckoutMethod"],
+          });
           this.loadCart = false;
         })
         .catch((err) => {
@@ -246,7 +270,7 @@ export default {
         let token =
           "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDg1MDcwNTIsInN1YiI6ImVLYXJ0IEF1dGhlbnRpY2F0aW9uIiwiaXNzIjoiZUthcnQifQ.dcdE_rrGdj9jN4z-HmBu1lsO2PH3OkX1r0o63DvIkIo";
 
-        const url = "http://smartgold.blazeaisolutions.com/api/" + endpooint;
+        const url = "https://smartgold.blazeaisolutions.com/api/" + endpooint;
         let data = new FormData();
         data.append("accesskey", "90336");
         data.append("user_id", this.$store.getters["auth/getUserId"]);
@@ -262,8 +286,14 @@ export default {
           })
           .then((response) => {
             this.$store.dispatch("cart/updateCart", {
-              user_id: this.$store.getters["auth/getUserId"]
-            })
+              user_id: this.$store.getters["auth/getUserId"],
+            });
+
+            this.$store.dispatch("checkout/setCheckoutUpdate", {
+              user_id: this.$store.getters["auth/getUserId"],
+              checkMethod: this.$store.getters["checkout/getCheckoutMethod"],
+            });
+
             this.loadCart = false;
           })
           .catch((err) => {
@@ -279,7 +309,7 @@ export default {
         let token =
           "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDg1MDcwNTIsInN1YiI6ImVLYXJ0IEF1dGhlbnRpY2F0aW9uIiwiaXNzIjoiZUthcnQifQ.dcdE_rrGdj9jN4z-HmBu1lsO2PH3OkX1r0o63DvIkIo";
 
-        const url = "http://smartgold.blazeaisolutions.com/api/" + endpooint;
+        const url = "https://smartgold.blazeaisolutions.com/api/" + endpooint;
         let data = new FormData();
         data.append("accesskey", "90336");
         data.append("user_id", this.$store.getters["auth/getUserId"]);
@@ -294,10 +324,14 @@ export default {
             headers: headers,
           })
           .then((response) => {
-            console.log(response)
+            //console.log(response)
             this.$store.dispatch("cart/updateCart", {
-              user_id: this.$store.getters["auth/getUserId"]
-            })
+              user_id: this.$store.getters["auth/getUserId"],
+            });
+            this.$store.dispatch("checkout/setCheckoutUpdate", {
+              user_id: this.$store.getters["auth/getUserId"],
+              checkMethod: this.$store.getters["checkout/getCheckoutMethod"],
+            });
             this.loadCart = false;
           })
           .catch((err) => {
@@ -305,30 +339,61 @@ export default {
           });
       }
     },
+    showElements() {
+      //console.log("show")
+      this.notFound = false;
+      this.notFoundElements = false;
+    },
+    hideElements() {
+      //console.log("hide")
+      this.notFound = true;
+      this.notFoundElements = true;
+    },
   },
   mounted() {
     //this.drawerRight = this.$store.getters["cart/getStateOpenCart"]
     this.onResize();
     window.addEventListener("resize", this.onResize);
-
-
   },
   computed: {
     total() {
       return this.cart.reduce((sum, value) => sum + value.discounted_price, 0);
     },
     cart() {
-      return this.$store.getters["cart/getCart"];
+      const cart_temp = this.$store.getters["cart/getCart"];
+      //console.log(cart_temp)
+      if (cart_temp != undefined && cart_temp != null) {
+        if (cart_temp.length > 0) {
+          this.showElements();
+        } else {
+          this.hideElements();
+        }
+      } else {
+        return [];
+      }
+      return cart_temp;
     },
     drawerRight() {
-      return this.$store.getters["cart/getStateOpenCart"]
-    }
-  },
+      const state = this.$store.getters["cart/getStateOpenCart"];
 
+      this.getData();
+
+      return state;
+    },
+  },
 };
 </script>
 <style src="@quasar/quasar-ui-qoverlay/dist/index.css"></style>
 <style>
+.empty_order {
+  height: 400px;
+}
+@media screen and (max-width: 960px) {
+  .empty_order {
+    height: 400px;
+  }
+}
+
 .card_cart {
   height: 68vh;
   max-height: 68vh;

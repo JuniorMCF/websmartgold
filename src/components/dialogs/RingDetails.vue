@@ -6,8 +6,10 @@
     :max-width="options.width"
     :style="{ zIndex: options.zIndex }"
     full-height
+
+    
   >
-    <q-card square class="q-dialog-plugin bg-whit">
+    <q-card square class="q-dialog-plugin bg-white ">
       <q-btn
         flat
         outlined
@@ -20,20 +22,24 @@
       </q-btn>
 
       <q-btn flat round class="cart-fixed" @click.prevent="openCart()">
-        <q-icon color="primary" size="md" name="shopping_bag"></q-icon>
+        <q-icon color="primary" size="lg" name="shopping_bag"></q-icon>
+        <q-badge v-if="quantityCart>0" style="background:#0277BD !important;" floating>{{quantityCart}}</q-badge>
       </q-btn>
       <div class="row justify-center q-mt-lg" style="height: 48px">
         <div class="col-12 text-center">
           <p
             class="text-h6 q-my-none"
-            style="padding: 0px 80px 0px 80px; overflow: hidden; line-height: 1"
+            style="padding: 0px 70px 0px 70px; overflow: hidden;text-overflow: ellipsis;display: -webkit-box;line-clamp: 2;-webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1"
           >{{ product.name }}</p>
         </div>
       </div>
       <q-separator></q-separator>
-      <q-card-section class="q-pb-none scroll" style="max-height: 574px">
+      <q-card-section class="q-py-none scroll content-ring"  >
         <div class="row justify-center q-my-lg text-center">
-          <q-img :src="product.image" class="ring-img-dialog" />
+          <q-img no-spinner fit="contain" :src="product.image" class="ring-img-dialog" />
+        </div>
+        <div class="row justify-center q-my-none text-center">
+          <span class="text-secondary text-weight-bold">*Weight and Price may vary subject to the stock available.</span>
         </div>
         <q-separator color="info" class="q-mx-md" />
         <q-card-section class="q-pa-xs q-px-md">
@@ -41,7 +47,7 @@
             <span class="text-subtitle1 text-weight-bold">Sold By</span>
           </p>
           <p class="q-my-none">
-            <span class="text-subtitle2 text-secondary text-weight-bold">
+            <span class="text-subtitle2  text-weight-bold" style="color:#0277BD !important">
               {{
                 product.store_name
               }}
@@ -56,19 +62,28 @@
           </p>
 
           <p class="q-my-sm">
-            <span class="text-subtitle1 text-info text-strike">
+            <span class="text-subtitle1 text-info" :class="product.price > product.discounted_price ? 'text-strike' : 'text-weight-bold' ">
               {{
                 formatRupiah(product.price)
               }}
             </span>
-            <span class="text-subtitle1 q-ml-md text-weight-bold">
+            <span class="text-subtitle1 q-ml-md text-weight-bold" v-if="product.price > product.discounted_price" >
               {{
                 formatRupiah(product.discounted_price)
               }}
             </span>
           </p>
         </q-card-section>
-        <q-card-section class="q-pa-xs q-px-md">
+
+        <q-card-section class="q-pa-xs q-px-md q-ma-none">
+          <q-chip outline color="orange" text-color="white" v-if="product.gender!=null">
+           {{product.gender}}
+          </q-chip>
+          <q-chip outline color="orange" text-color="white">
+           Gross weight {{product.weight}} gm
+          </q-chip>
+        </q-card-section>
+                <q-card-section class="q-pa-xs q-px-md">
           <p class="q-my-none">
             <span class="text-subtitle1 text-info">
               {{
@@ -77,7 +92,7 @@
             </span>
           </p>
         </q-card-section>
-        <q-card-section align="start" class="q-py-md row q-mt-md">
+        <q-card-section align="start" class="q-py-md q-pt-sm row q-mt-md">
           <q-input
             bg-color="primary"
             input-class="text-center"
@@ -171,8 +186,10 @@ export default {
   },
   methods: {
     open(product, options) {
+      this.$store.commit("cart/openCart", false);
       this.dialog = true;
       this.product = product;
+      //console.log(product)
       this.quantity = 1;
       this.options = Object.assign(this.options, options);
 
@@ -217,12 +234,13 @@ export default {
         let token =
           "eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NDg1MDcwNTIsInN1YiI6ImVLYXJ0IEF1dGhlbnRpY2F0aW9uIiwiaXNzIjoiZUthcnQifQ.dcdE_rrGdj9jN4z-HmBu1lsO2PH3OkX1r0o63DvIkIo";
 
-        const url = "http://smartgold.blazeaisolutions.com/api/" + endpooint;
+        const url = "https://smartgold.blazeaisolutions.com/api/" + endpooint;
         let data = new FormData();
         data.append("accesskey", "90336");
         data.append("product_id", this.product.id);
         data.append("user_id", this.$store.getters["auth/getUserId"]);
         data.append("quantity", this.quantity);
+        //console.log(this.quantity)
         const headers = {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -237,6 +255,7 @@ export default {
             this.$store.dispatch("cart/updateCart", {
               user_id: this.$store.getters["auth/getUserId"]
             })
+            this.$store.commit("cart/openCart", true);
             this.resolve(true);
             this.dialog = false;
           })
@@ -253,11 +272,18 @@ export default {
     totalPrice() {
       return this.quantity * this.product.discounted_price;
     },
+    quantityCart(){
+      return this.$store.getters["cart/getQuantityCart"]
+    }
   },
 };
 </script>
 
-<style>
+<style scoped>
+.content-ring{
+  max-height: calc( 100% - 200px);
+}
+
 .q-dialog-plugin {
   width: 500px;
 }
@@ -266,22 +292,24 @@ export default {
 }
 @media (max-width: 600px) {
   .q-dialog-plugin {
-    width: 100% !important;
+     width: 100% !important;
+     height: 100% !important;
   }
   .q-dialog__inner--minimized {
     padding: 0px 0px 0px 0px !important;
   }
-}
+
+} 
 .ring-img-dialog {
-  height: 250px;
-  width: 250px;
+  height: 160px;
+  width: 100%;
 }
 .select-ring-size {
   max-width: 150px;
 }
 .close-fixed {
   position: absolute;
-  top: 15px;
+  top: 20px;
   left: 15px;
 }
 .cart-fixed {
