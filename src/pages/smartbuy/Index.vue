@@ -176,6 +176,7 @@ export default {
             message: "Oops! Location unknown",
             group: false,
           });
+          this.load_button = false;
           return
         }
 

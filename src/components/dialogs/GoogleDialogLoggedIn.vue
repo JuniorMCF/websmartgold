@@ -19,13 +19,7 @@
             >
             </GMapAutocomplete>
             <div class="col-1 self-center q-mx-none">
-              <q-btn
-                flat
-                size="lg"
-                icon="close"
-                class="q-px-sm"
-                @click.prevent="cancel"
-              >
+              <q-btn flat size="lg" icon="close" class="q-px-sm" @click.prevent="cancel">
               </q-btn>
             </div>
           </div>
@@ -45,11 +39,7 @@
        @place_changed="setPlace"
     >
   </GMapAutocomplete>-->
-          <GMapMarker
-            :key="index"
-            v-for="(m, index) in markers"
-            :position="m.position"
-          />
+          <GMapMarker :key="index" v-for="(m, index) in markers" :position="m.position" />
         </GMapMap>
 
         <q-btn
@@ -67,7 +57,7 @@
           color="white"
           text-color="primary"
           icon="my_location"
-          @click.prevent="myLocation()"
+          @click.prevent="myLocationDisable()"
         ></q-btn>
       </q-card-section>
       <q-card-section style="height: 90px">
@@ -154,12 +144,12 @@ export default {
         fullscreenControl: false,
         disableDefaultUi: false,
       },
-      center: { lat: 11.0116775, lng: 76.8271484 },
+      center: { lat: 11.013868, lng: 76.8903198 },
       markers: [
         {
           position: {
-            lat: 11.0116775,
-            lng: 76.8271484,
+            lat: 11.013868,
+            lng: 76.8903198,
           },
         },
       ],
@@ -185,7 +175,7 @@ export default {
   },
   methods: {
     open(options) {
-      console.log("abriendo mapa")
+      console.log("abriendo mapa");
       this.dialog = true;
       this.options = Object.assign(this.options, options);
       this.myLocation();
@@ -194,10 +184,6 @@ export default {
         this.resolve = resolve;
         this.reject = reject;
       });
-    },
-    agree() {
-      this.resolve(true);
-      this.dialog = false;
     },
     cancel() {
       const address = {
@@ -230,10 +216,7 @@ export default {
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),
         };
-        this.updateAddress(
-          place.geometry.location.lat(),
-          place.geometry.location.lng()
-        );
+        this.updateAddress(place.geometry.location.lat(), place.geometry.location.lng());
 
         //this.$store.dispatch('checkout/setAddressDefault', { address: place })
       }
@@ -250,7 +233,7 @@ export default {
           longitude: this.longitude,
           success: true,
         };
-
+        
         this.resolve(address);
         this.dialog = false;
       }
@@ -262,6 +245,65 @@ export default {
         return;
       }
       this.map_type = "satellite";
+    },
+    myLocationDisable() {
+      let self = this;
+
+      if (navigator.geolocation) {
+        /* la geolocalización está disponible */
+
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            self.markers[0].position = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+
+            self.center = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+            self.updateAddress(position.coords.latitude, position.coords.longitude);
+          },
+          function showError(error) {
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                Notify.create({
+                  message:
+                    "Geolocation is not enabled. Please enable to use this feature",
+                  group: false,
+                });
+                break;
+              case error.POSITION_UNAVAILABLE:
+                Notify.create({
+                  message: "Position not available",
+                  group: false,
+                });
+                break;
+              case error.TIMEOUT:
+                Notify.create({
+                  message: "Error timeout",
+                  group: false,
+                });
+                break;
+              case error.UNKNOWN_ERROR:
+                Notify.create({
+                  message: "Internet error",
+                  group: false,
+                });
+                break;
+            }
+          }
+        );
+      } else {
+        /* la geolocalización NO está disponible */
+        this.resolve(false);
+        this.dialog = false;
+        Notify.create({
+          message: "Geolocation is not supported by this device",
+          group: false,
+        });
+      }
     },
     myLocation() {
       let self = this;
@@ -280,21 +322,14 @@ export default {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
             };
-            self.updateAddress(
-              position.coords.latitude,
-              position.coords.longitude
-            );
+            self.updateAddress(position.coords.latitude, position.coords.longitude);
           },
           function showError(error) {
             switch (error.code) {
               case error.PERMISSION_DENIED:
-                self.resolve(false);
-                self.dialog = false;
-                Notify.create({
-                  message:
-                    "Geolocation is not enabled. Please enable to use this feature",
-                  group: false,
-                });
+                
+                self.dialog = true;
+
                 break;
               case error.POSITION_UNAVAILABLE:
                 Notify.create({
@@ -375,8 +410,6 @@ export default {
 </script>
 
 <style scoped>
-
-
 .pac-target-input {
   padding: 10px;
 }

@@ -62,12 +62,12 @@
           </p>
 
           <p class="q-my-sm">
-            <span class="text-subtitle1 text-info" :class="product.price > product.discounted_price ? 'text-strike' : 'text-weight-bold' ">
+            <span class="text-subtitle1 text-info text-strike">
               {{
                 formatRupiah(product.price)
               }}
             </span>
-            <span class="text-subtitle1 q-ml-md text-weight-bold" v-if="product.price > product.discounted_price" >
+            <span class="text-subtitle1 q-ml-md text-weight-bold"  >
               {{
                 formatRupiah(product.discounted_price)
               }}

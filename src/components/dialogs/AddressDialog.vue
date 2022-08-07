@@ -320,19 +320,20 @@ export default {
       }
     },
     getCurrentLocation() {
+      console.log("current location")
       /**open dialog Google */
-      this.$refs.gdli
-        .open()
-        .then((res) => {
+      const self = this
+      this.$refs.gdli.open().then(res => {
+         
           if (res.success == true) {
-            this.address = res.addressCity;
+            
+            self.address = res.addressCity;
 
-            this.area = res.area;
-            this.city = res.city;
-            this.pin_code = res.pincode;
+            self.area = res.area;
+            self.city = res.city;
+            self.pin_code = res.pincode;
           }
-        })
-        .catch((err) => {
+        }).catch(err => {
           console.log(err);
         });
     },

@@ -28,7 +28,7 @@
               <q-input
                 square
                 outlined
-                 type="password" pattern="[0-9]*" inputmode="numeric"
+                 type="text" pattern="[0-9]*" inputmode="numeric"
                  maxlength="6"
                 v-model="code"
                 label="Enter OTP"
