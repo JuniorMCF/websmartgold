@@ -5,6 +5,7 @@
     v-model="dialog"
     :max-width="options.width"
     :style="{ zIndex: options.zIndex }"
+
   >
     <q-card square class="q-dialog-plugin bg-white q-pa-md">
       <q-card-section class="q-pa-md">
@@ -62,6 +63,16 @@ export default {
       this.dialog = false;
     },
   },
+  watch: {
+    dialog: function() {
+      if(this.dialog){
+        document.documentElement.style.overflow = 'hidden'
+        return
+      }
+
+      document.documentElement.style.overflow = 'auto'
+    }
+  }
 };
 </script>
 

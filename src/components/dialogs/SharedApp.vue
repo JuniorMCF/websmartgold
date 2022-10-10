@@ -81,6 +81,16 @@ export default {
       }
     },
   },
+  watch: {
+    dialog: function() {
+      if(this.dialog){
+        document.documentElement.style.overflow = 'hidden'
+        return
+      }
+
+      document.documentElement.style.overflow = 'auto'
+    }
+  }
 };
 </script>
 

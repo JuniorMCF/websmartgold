@@ -163,7 +163,7 @@ export default {
       dialog: false,
       resolve: null,
       reject: null,
-      id:null,
+      id: null,
       name: "",
       address: "",
       address_second: "",
@@ -184,7 +184,7 @@ export default {
   methods: {
     open(
       address = {
-        id:null,
+        id: null,
         name: "",
         address: "",
         landmark: "",
@@ -195,7 +195,7 @@ export default {
       isEdit = false,
       options
     ) {
-      this.id = address.id
+      this.id = address.id;
       this.name = address.name;
       this.address = address.address;
       this.address_second = address.landmark;
@@ -264,7 +264,7 @@ export default {
           });
       }
     },
-    updateLocation(){
+    updateLocation() {
       //
       if (!this.$refs.form_address.validate()) {
         return;
@@ -291,7 +291,7 @@ export default {
 
         data.append("user_id", this.$store.getters["auth/getUserId"]);
         data.append("name", this.name);
-        data.append("address_id",this.id)
+        data.append("address_id", this.id);
         data.append("address", this.address);
         data.append("landmark", this.address_second);
         data.append("city", this.city);
@@ -320,20 +320,21 @@ export default {
       }
     },
     getCurrentLocation() {
-      console.log("current location")
+      console.log("current location");
       /**open dialog Google */
-      const self = this
-      this.$refs.gdli.open().then(res => {
-         
+      const self = this;
+      this.$refs.gdli
+        .open()
+        .then((res) => {
           if (res.success == true) {
-            
             self.address = res.addressCity;
 
             self.area = res.area;
             self.city = res.city;
             self.pin_code = res.pincode;
           }
-        }).catch(err => {
+        })
+        .catch((err) => {
           console.log(err);
         });
     },
@@ -348,7 +349,18 @@ export default {
       this.resolve(false);
       this.dialog = false;
     },
+
   },
+  watch: {
+    dialog: function() {
+      if(this.dialog){
+        document.documentElement.style.overflow = 'hidden'
+        return
+      }
+
+      document.documentElement.style.overflow = 'auto'
+    }
+  }
 };
 </script>
 

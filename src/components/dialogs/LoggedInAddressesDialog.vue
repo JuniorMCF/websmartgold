@@ -6,6 +6,7 @@
     :max-width="options.width"
     :style="{ zIndex: options.zIndex }"
     full-height
+
   >
     <q-card square class="q-dialog-plugin bg-white q-pt-md">
       <q-btn
@@ -246,6 +247,16 @@ export default {
         .catch((err) => {});
     },
   },
+  watch: {
+    dialog: function() {
+      if(this.dialog){
+        document.documentElement.style.overflow = 'hidden'
+        return
+      }
+
+      document.documentElement.style.overflow = 'auto'
+    }
+  }
 };
 </script>
 
